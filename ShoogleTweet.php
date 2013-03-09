@@ -96,7 +96,7 @@ class ShoogleTweet {
 
     private function render_tweets($items, $screen_name) {
 
-        $odd_even = array('even', 'odd');
+        $odd_even = array('odd', 'even');
 
         $output = '<ul id="tw-list">';
 
