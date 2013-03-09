@@ -25,7 +25,8 @@ class ShoogleTweet {
         'timeout' => 5,                 // Timeout in seconds
         'con_timeout' => 3,             // Timeout in seconds
         'cachetime_tier_1' =>   300,    // Cachetime in seconds
-        'cachetime_tier_2' =>   9000    // Cachetime in seconds
+        'cachetime_tier_2' =>   9000,   // Cachetime in seconds
+        'limit' => 5
     );
 
     public function __construct() {
@@ -48,17 +49,13 @@ class ShoogleTweet {
         return $this->generate_output($screen_name);
     }
 
-    public function tst(){
-        return $this->generate_output('b4ckspace');
-    }
-
     /**
      * Returns output for the page
      * @param string twitter screen name
      * @return string
      */
 
-    private function generate_output($screen_name){ 
+    private function generate_output($screen_name) { 
 
         $twitter_feed = $this->high_availability_wrapper($screen_name);
         if($twitter_feed === false) {
@@ -72,6 +69,8 @@ class ShoogleTweet {
         if($json_data === null){
             return "An error occured. That's all we know.";
         }
+
+        $json_data = array_slice($json_data, 0, $this->settings['limit']);
 
         $twitter_items = array();
         foreach($json_data as $index => $item){
