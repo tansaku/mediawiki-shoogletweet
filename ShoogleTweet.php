@@ -45,14 +45,7 @@ class ShoogleTweet {
         $localParser = new Parser();
         $category = $localParser->preprocess($category, $parser->mTitle, $parser->mOptions, false);
 
-        $output = $this->generate_output($screen_name);
-
-        global $wgOut, $wgScriptPath;
-
-        $localParser = new Parser();
-        $output = $localParser->parse($output, $parser->mTitle, $parser->mOptions);
-        return $output->getText();
-
+        return $this->generate_output($screen_name);
     }
 
     public function tst(){
@@ -115,7 +108,7 @@ class ShoogleTweet {
 
             $output .= sprintf('<li class="%s">', $odd_even[$i%count($odd_even)]);
             $output .= sprintf('<span class="tw-content">%s</span>', $item->get_text());
-            $output .= sprintf('<span class="tw-date">[<a href="%s"> target="_blank" title="%s">%s</a>]</span>', $link, $user, $time);
+            $output .= sprintf('<span class="tw-date">[<a href="%s" target="_blank" title="%s">%s</a>]</span>', $link, $user, $time);
             $output .= '</li>';
         }
 
