@@ -105,9 +105,12 @@ class ShoogleTweet {
             $time = $item->get_pubdate_object()->format('d.m.Y H:i:s');
             $link = sprintf('https://twitter.com/%s/status/%d', $screen_name, $item->get_id());
             $user = $item->get_user();
+            
+            $desc = $item->get_text();
+            $desc = $this->process_description($desc);
 
             $output .= sprintf('<li class="%s">', $odd_even[$i%count($odd_even)]);
-            $output .= sprintf('<span class="tw-content">%s</span>', $item->get_text());
+            $output .= sprintf('<span class="tw-content">%s</span>', $desc);
             $output .= sprintf('<span class="tw-date">[<a href="%s" target="_blank" title="%s">%s</a>]</span>', $link, $user, $time);
             $output .= '</li>';
         }
@@ -115,6 +118,14 @@ class ShoogleTweet {
         $output .= '</ul>';
 
         return $output;
+    }
+
+    /**
+     * Formats links to real links
+     */
+    private function process_description($description) {
+        $description = preg_replace('/(https?:\/\/[^\s$]+)/', '<a href="$1" target="_blank">$1</a>', $description);
+        return $description;
     }
 
     /**
