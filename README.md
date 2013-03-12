@@ -10,6 +10,8 @@ therefore a slow website response.
 
 shoogle tweet resolves this issue ;)
 
+You can see this extension in production here: http://hackerspace-bamberg.de
+
 todo:
 * cache html instead of json data
 * test, test, test
