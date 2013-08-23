@@ -1,0 +1,3 @@
+[submodule "Twitter"]
+	path = Twitter
+	url = git@github.com:schinken/oauth2-twitter.git

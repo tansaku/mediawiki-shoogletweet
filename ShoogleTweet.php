@@ -17,6 +17,12 @@ function wfShoogleTweet() {
     new ShoogleTweet();
 }
 
+class OAuthException extends Exception {};
+
+$wgShoogleTweetConsumerKey = null;
+$wgShoogleTweetConsumerKeySecret = null;
+
+require_once 'Twitter/API.php';
 
 class ShoogleTweet {
 
@@ -36,6 +42,7 @@ class ShoogleTweet {
 
 
     public function hookShoogleTweet($screen_name, $argv, $parser) {
+
 
         $output = '';
         $parser->disableCache();
@@ -62,15 +69,7 @@ class ShoogleTweet {
             return "An error occured. That's all we know.";
         }
 
-        $json_data = @json_decode($twitter_feed, true);
-
-        // This should never ever happen, because its checked before
-        // but you'll never know
-        if($json_data === null){
-            return "An error occured. That's all we know.";
-        }
-
-        $json_data = array_slice($json_data, 0, $this->settings['limit']);
+        $json_data = array_slice($twitter_feed, 0, $this->settings['limit']);
 
         $twitter_items = array();
         foreach($json_data as $index => $item){
@@ -168,36 +167,39 @@ class ShoogleTweet {
 
     private function retrieve_twitterfeed($screen_name) {
 
+        global $wgShoogleTweetConsumerKey, $wgShoogleTweetConsumerKeySecret;
+
+        if($wgShoogleTweetConsumerKey === null || $wgShoogleTweetConsumerKeySecret === null) {
+            throw new OAuthException('Error: ConsumerKey or ConsumerKeySecret not set');
+        }
+
         // Check if there is a cached in tier 1 cache, if yes, return
         if( ($cache = $this->get_cache('shoogle_tweet_tier_1')) !== false ) {
             return $cache;
         }
 
-        $url = 'http://api.twitter.com/1/statuses/user_timeline.json?screen_name='.$screen_name;
+        $twit = new Twitter_API();
+        if( ($token = $this->get_cache('shoogle_tweet_oauth_token')) !== false ) {
+            $twit->set_access_token($token);
+        } else {
+            $token = $twit->get_access_token($wgShoogleTweetConsumerKey, $wgShoogleTweetConsumerKeySecret);
+            $this->write_cache('shoogle_tweet_oauth_token', $token, 0); // Cache as long as possible
+        }
 
-        $ch = curl_init($url);
+        try {
+            $result = $twit->get('1.1/statuses/user_timeline.json', array(
+                'screen_name' => $screen_name
+            ));                                   
 
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->settings['timeout']);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->settings['con_timeout']);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_ENCODING, 'gzip,deflate');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'ShoogleTweet Feedparser');
-
-        $returned = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        // Checking for json_decode === null is legit here, because
-        // the url should never return null (even if its a valid json value
-        // itself)
-        if($http_code != 200 || $returned == false || @json_decode($returned) === null) {
-            throw new Exception('Failed to retrieve twitterfeed');
+        } catch(Exception $e) {
+            $this->delete_cache('shoogle_tweet_oauth_token');
+            throw new Exception($e->getMessage());
         }
 
         // Write tier 1 cache
-        $this->write_cache('shoogle_tweet_tier_1', $returned, $this->settings['cachetime_tier_1']);
+        $this->write_cache('shoogle_tweet_tier_1', $result, $this->settings['cachetime_tier_1']);
 
-        return $returned;
+        return $result;
     }
 
     /**
@@ -226,6 +228,18 @@ class ShoogleTweet {
     private function write_cache($key, $data, $cache_time) {
         if( function_exists('apc_store') ) {
             apc_store( $key, $data, $cache_time );
+        }
+    }
+
+    /**
+     * Deletes given key from APC cache 
+     *
+     * @param string $key apc cache key
+    */
+
+    private function delete_cache($key) {
+        if(function_exists('apc_delete')) {
+            apc_delete($key);
         }
     }
 
