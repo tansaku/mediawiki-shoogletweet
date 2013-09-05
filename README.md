@@ -15,16 +15,18 @@ To use this extension you have to create an oAuth2 application on the [twitter "
 - git submodule update
 - Enable the extension by adding the follwing lines to your LocalSettings.php-File inside your mediawiki directory
 
-    require_once("$IP/extensions/mediawiki-shoogletweet/ShoogleTweet.php");
-    $wgShoogleTweetConsumerKey = '#YOUR_CONSUMER_KEY#';
-    $wgShoogleTweetConsumerKeySecret = '#YOUR_CONSUMER_KEY_SECRET#';
-
+```PHP
+require_once("$IP/extensions/mediawiki-shoogletweet/ShoogleTweet.php");
+$wgShoogleTweetConsumerKey = '#YOUR_CONSUMER_KEY#';
+$wgShoogleTweetConsumerKeySecret = '#YOUR_CONSUMER_KEY_SECRET#';
+```
 
 ## Usage
 
 Just add
-
-    <ShoogleTweet limit="6">b4ckspace</ShoogleTweet>
+```HTML
+<ShoogleTweet limit="6">b4ckspace</ShoogleTweet>
+```
 
 to you wikipage
 
@@ -32,18 +34,20 @@ to you wikipage
 
 The HTML result can be simply styled with this piece of css
 
-    #tw-list {
-        margin:0;
-        padding: 0;
-    }
-    #tw-list li{
-        list-style:none;
-        margin-bottom: 2px;
-        padding: 4px;
-    }
-    #tw-list li.even{
-        background-color:#f8f8f8;
-    }
+```CSS
+#tw-list {
+    margin:0;
+    padding: 0;
+}
+#tw-list li{
+    list-style:none;
+    margin-bottom: 2px;
+    padding: 4px;
+}
+#tw-list li.even{
+    background-color:#f8f8f8;
+}
+```
 
 ## Misc
 
