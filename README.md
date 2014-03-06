@@ -1,17 +1,56 @@
 #shoogle tweet
 
-shoogle-tweet is a mediawiki-extension to display a twitter feed for a given
-screen_name. It caches the response in 2 tiers. First for the normal display, 
-so the twitter api isnt "crawled" every display - and the second tier for
-high availability.
+mediawiki-shoogletweet is a mediawiki extension which useses OAuth2 for authentication. it displays the current tweets of a given screen name.
 
-Sometimes the twitter api is not available - which resulted in a timeout and
-therefore a slow website response. 
+## Retrieving oAuth2 access
 
-shoogle tweet resolves this issue ;)
+To use this extension you have to create an oAuth2 application on the [twitter "my application" page](https://dev.twitter.com/apps). If you've created the application, you'll retrieve a "Consumer Key" and "Consumer Key Secret" which is needed later.
 
-You can see this extension in production here: http://hackerspace-bamberg.de
+## Installing the extension
 
-todo:
-* cache html instead of json data
-* test, test, test
+- Navigate to your mediawiki extension directory ($IP/extensions)
+- git clone https://github.com/schinken/mediawiki-shoogletweet
+- change inside that directory (mediawiki-shoogletweet)
+- git submodule init
+- git submodule update
+- Enable the extension by adding the follwing lines to your LocalSettings.php-File inside your mediawiki directory
+
+```PHP
+require_once("$IP/extensions/mediawiki-shoogletweet/ShoogleTweet.php");
+$wgShoogleTweetConsumerKey = '#YOUR_CONSUMER_KEY#';
+$wgShoogleTweetConsumerKeySecret = '#YOUR_CONSUMER_KEY_SECRET#';
+```
+
+## Usage
+
+Just add
+```HTML
+<ShoogleTweet limit="6">b4ckspace</ShoogleTweet>
+```
+
+to you wikipage
+
+## Style
+
+The HTML result can be simply styled with this piece of css
+
+```CSS
+#tw-list {
+    margin:0;
+    padding: 0;
+}
+#tw-list li{
+    list-style:none;
+    margin-bottom: 2px;
+    padding: 4px;
+}
+#tw-list li.even{
+    background-color:#f8f8f8;
+}
+```
+
+## Misc
+
+page(s) using this extension:
+
+* http://hackerspace-bamberg.de
