@@ -30,6 +30,11 @@ Just add
 
 to you wikipage
 
+You can also enable ShoogleTweet to display @-replies:
+```HTML
+<ShoogleTweet limit="6" display_replies="true">b4ckspace</ShoogleTweet>
+```
+
 ## Style
 
 The HTML result can be simply styled with this piece of css

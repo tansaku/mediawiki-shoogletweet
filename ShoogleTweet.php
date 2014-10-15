@@ -33,7 +33,8 @@ class ShoogleTweet {
         'con_timeout' => 3,             // Timeout in seconds
         'cachetime_tier_1' =>   300,    // Cachetime in seconds
         'cachetime_tier_2' =>   9000,   // Cachetime in seconds
-        'limit' => 5
+        'limit' => 5,
+        'display_replies' => false
     );
 
     public function __construct() {
@@ -72,7 +73,7 @@ class ShoogleTweet {
             try {
                 $twitter_item = new ShoogleTweet_Tweet($item);
 
-                if(!$wgShoogleTweetDisplayReplies && $twitter_item->is_reply()) {
+                if(!$this->settings['display_replies'] && $twitter_item->is_reply()) {
                     continue;
                 }
 
