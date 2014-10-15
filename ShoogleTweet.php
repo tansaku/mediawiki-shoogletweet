@@ -66,7 +66,7 @@ class ShoogleTweet {
             return "An error occured. That's all we know.";
         }
 
-        $json_data = array_slice($twitter_feed, 0, $this->settings['limit']);
+        $json_data = array_slice($twitter_feed, 0, 25);
 
         $twitter_items = array();
         foreach($json_data as $index => $item){
@@ -78,6 +78,11 @@ class ShoogleTweet {
                 }
 
                 $twitter_items[] = $twitter_item;
+
+                if(count($twitter_items) == $this->settings['limit']) {
+                    break;
+                }
+
             } catch(Exception $e) {
                 // Log error with tweet, but also skip!
                 continue;
