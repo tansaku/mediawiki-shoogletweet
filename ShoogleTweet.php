@@ -19,6 +19,7 @@ function wfShoogleTweet() {
 
 class OAuthException extends Exception {};
 
+$wgShoogleTweetDisplayReplies = false;
 $wgShoogleTweetConsumerKey = null;
 $wgShoogleTweetConsumerKeySecret = null;
 
@@ -70,6 +71,11 @@ class ShoogleTweet {
         foreach($json_data as $index => $item){
             try {
                 $twitter_item = new ShoogleTweet_Tweet($item);
+
+                if(!$wgShoogleTweetDisplayReplies && $twitter_item->is_reply()) {
+                    continue;
+                }
+
                 $twitter_items[] = $twitter_item;
             } catch(Exception $e) {
                 // Log error with tweet, but also skip!
@@ -335,6 +341,10 @@ class ShoogleTweet_Tweet {
 
     public function is_retweeted() {
         return (bool) $this->get_attribute('retweeted', false);
+    }
+
+    public function is_reply() {
+        return (strpos($this->get_text(), '@') === 0);
     }
 
 }
