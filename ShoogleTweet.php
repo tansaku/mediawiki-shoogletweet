@@ -6,10 +6,11 @@ $wgExtensionFunctions[] = 'wfShoogleTweet';
 $wgExtensionCredits['parserhook'][] = array(
         'path'            => __FILE__,
         'name'            => 'ShoogleTweet',
-        'version'         => '0.00001',
-        'author'          => 'Schinken',
-        'url'             => 'http://www.hackerspace-bamberg.de',
-        'description'     => 'High Availabilty Twitter Feed for MediaWiki'  );
+        'version'         => '1.0.0',
+        'author'          => 'Christopher Schirner',
+        'url'             => 'https://github.com/schinken/mediawiki-shoogletweet',
+        'description'     => 'Twitter Feed for MediaWiki'
+);
 
 
 // Register parser-hook
