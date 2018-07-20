@@ -108,7 +108,7 @@ class ShoogleTweet {
 
         foreach($items as $i => $item) {
 
-            $time = $item->get_pubdate_object()->format('d.m.Y H:i:s');
+            $time = $item->get_pubdate_object()->format('D M j G:i');
             $link = sprintf('https://twitter.com/%s/status/%d', $screen_name, $item->get_id());
             $user = $item->get_user();
             
@@ -117,7 +117,7 @@ class ShoogleTweet {
 
             $output .= sprintf('<li class="%s">', $odd_even[$i%count($odd_even)]);
             $output .= sprintf('<span class="tw-content">%s</span>', $desc);
-            $output .= sprintf('<span class="tw-date">[<a href="%s" target="_blank" title="%s">%s</a>]</span>', $link, $user, $time);
+            $output .= sprintf('<span class="tw-date">&nbsp;<a href="%s" target="_blank" title="%s">-- %s</a></span>', $link, $user, $time);
             $output .= '</li>';
         }
 
@@ -131,6 +131,8 @@ class ShoogleTweet {
      */
     private function process_description($description) {
         $description = preg_replace('/(https?:\/\/[^\s$]+)/', '<a href="$1" target="_blank">$1</a>', $description);
+        $description = preg_replace('/@([a-zA-Z0-9_]+)/', '<a href="https://twitter.com/$1" target="_blank">@$1</a>', $description);
+        $description = preg_replace('/#([a-zA-Z0-9_]+)/', '<a href="https://twitter.com/hashtag/$1" target="_blank">#$1</a>', $description);
         return $description;
     }
 
@@ -197,7 +199,7 @@ class ShoogleTweet {
         try {
             $result = $twit->get('1.1/statuses/user_timeline.json', array(
                 'screen_name' => $screen_name
-            ));                                   
+            )); 
 
         } catch(Exception $e) {
             $this->delete_cache('shoogle_tweet_oauth_token');
